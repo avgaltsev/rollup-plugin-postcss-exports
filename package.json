@@ -1,0 +1,11 @@
+{
+  "name": "rollup-plugin-postcss-exports",
+  "description": "",
+  "version": "0.0.0",
+  "main": "index.js",
+  "dependencies": {
+    "postcss": "^5.2.15",
+    "postcss-exports": "git+ssh://git@github.com:avgaltsev/postcss-exports.git",
+    "rollup-pluginutils": "^2.0.1"
+  }
+}
