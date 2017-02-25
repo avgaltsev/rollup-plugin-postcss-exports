@@ -5,15 +5,25 @@ let utils = require("rollup-pluginutils");
 let postcss = require("postcss");
 let postcssExports = require("postcss-exports");
 
-let headerPart = `function getClass(classData) {
-	return function (...mods) {
-		return [classData.base, ...mods.map(function (mod) {
-			return classData.mods && classData.mods[mod];
-		})].filter(function (className) {
-			return className;
-		}).join(" ");
+let moduleName = "long-unique-name-for-our-secret-purposes";
+
+let moduleSource = `export default function (classData) {
+	return function () {
+		var mods = [];
+
+		for (var a = 0; a < arguments.length; a++) {
+			var mod = classData.mods && classData.mods[arguments[a]];
+
+			if (mod) {
+				mods.push(mod);
+			}
+		}
+
+		return (classData.base ? [classData.base] : []).concat(mods).join(" ");
 	}
 };`;
+
+let headerPart = `import getClass from "${moduleName}";`;
 
 function getPart(scope, name) {
 	let classes = Object.entries(scope).map(function ([className, classData]) {
@@ -41,6 +51,18 @@ module.exports = function (options = {}) {
 	let cssMap = {};
 
 	return {
+		resolveId(importee, importer) {
+			if (importee === moduleName) {
+				return importee;
+			}
+		},
+
+		load(id) {
+			if (id === moduleName) {
+				return moduleSource;
+			}
+		},
+
 		transform(source, id) {
 			if (!filter(id) || !extensions.includes(path.extname(id))) {
 				return null;
