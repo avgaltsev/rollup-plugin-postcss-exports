@@ -72,7 +72,7 @@ module.exports = function (options = {}) {
 			});
 		},
 
-		onwrite() {
+		ongenerate(options, bundle) {
 			takeCss(Object.values(cssMap).join("\n"));
 			cssMap = {};
 		}
