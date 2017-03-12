@@ -43,7 +43,7 @@ module.exports = function (options = {}) {
 	let generateName = options.generateName;
 
 	let preprocess = (typeof options.preprocess == "function") ? options.preprocess : function (source) {
-		return source;
+		return Promise.resolve(source);
 	};
 
 	let takeCss = (typeof options.takeCss == "function") ? options.takeCss : function () {};
@@ -79,16 +79,18 @@ module.exports = function (options = {}) {
 			})]);
 
 			return new Promise(function (resolve, reject) {
-				processor.process(preprocess(source) || source, {from: id, to: id}).then(function (result) {
-					cssMap[id] = result;
+				preprocess(source).then((output) => {
+					return processor.process(output, {from: id, to: id}).then(function (result) {
+						cssMap[id] = result;
 
-					let parts = Object.entries(exports.scopes).map(function (name, scope) {
-						return getPart(scope, name);
-					});
+						let parts = Object.entries(exports.scopes).map(function (name, scope) {
+							return getPart(scope, name);
+						});
 
-					resolve({
-						code: [headerPart, ...parts, getPart(exports.defaultScope)].join("\n"),
-						map: {mappings: ""}
+						resolve({
+							code: [headerPart, ...parts, getPart(exports.defaultScope)].join("\n"),
+							map: {mappings: ""}
+						});
 					});
 				});
 			});
