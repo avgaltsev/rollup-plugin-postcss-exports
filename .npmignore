@@ -1,7 +1,7 @@
 node_modules
 package-lock.json
 
-*.js
-*.d.ts
+*.ts
+!*.d.ts
 
-!/types/*.d.ts
+/types/*.d.ts

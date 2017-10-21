@@ -1,0 +1,22 @@
+{
+	"compilerOptions": {
+		"typeRoots": [
+			"./node_modules/@types/"
+		],
+
+		"target": "es5",
+
+		"declaration": true,
+
+		"lib": [
+			"scripthost",
+			"es2017"
+		],
+
+		"noImplicitAny": true
+	},
+
+	"exclude": [
+		"./node_modules/"
+	]
+}
