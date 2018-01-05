@@ -58,7 +58,11 @@ const getPart = (scope: Scope, name?: string) => {
 
 const dontTakeCss: CssTaker = (css) => {};
 
-export default (pluginOptions: PluginOptions): Plugin => {
+export interface Plugin1 extends Plugin {
+	transform(a: any, b: any): any;
+}
+
+export default (pluginOptions: PluginOptions): Plugin1 => {
 	const filter = createFilter(pluginOptions.include, pluginOptions.exclude);
 
 	const extensions = Array.isArray(pluginOptions.extensions) ? pluginOptions.extensions : [];
