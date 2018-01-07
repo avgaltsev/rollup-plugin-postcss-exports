@@ -11,7 +11,7 @@
 	},
 	"devDependencies": {
 		"@types/node": "^8.5.2",
-		"@types/rollup": "^0.51.3",
+		"@types/rollup": "^0.51.4",
 		"tslint": "^5.8.0",
 		"typescript": "^2.6.2"
 	},
