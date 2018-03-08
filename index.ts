@@ -1,6 +1,6 @@
 import * as path from "path";
 
-import {Plugin, SourceMap} from "rollup";
+import {Plugin} from "rollup";
 import {Glob, createFilter} from "rollup-pluginutils";
 
 import * as postcss from "postcss";
@@ -8,6 +8,10 @@ import {AcceptedPlugin} from "postcss";
 
 import postcssExports from "postcss-exports";
 import {NameGenerator, Scope, Exports} from "postcss-exports";
+
+import * as packageJson from "./package.json";
+
+const PLUGIN_NAME: string = packageJson.name;
 
 export interface CssTaker {
 	(css: string): void;
@@ -70,20 +74,22 @@ export default (pluginOptions: PluginOptions): Plugin => {
 	const cssMap = new Map();
 
 	return {
+		name: PLUGIN_NAME,
+
 		load(id) {
 			if (id === MODULE_NAME) {
 				return MODULE_SOURCE;
 			}
 		},
 
-		resolveId(importee) {
-			if (importee === MODULE_NAME) {
-				return importee;
+		resolveId(id) {
+			if (id === MODULE_NAME) {
+				return id;
 			}
 		},
 
 		async transform(source, id) {
-			if (!filter(id) || !extensions.includes(path.extname(id))) {
+			if (!filter(id as string) || !extensions.includes(path.extname(id as string))) {
 				return null;
 			}
 
@@ -98,7 +104,7 @@ export default (pluginOptions: PluginOptions): Plugin => {
 			})]);
 
 			const preprocessed = await preprocess(source);
-			const processed = await processor.process(preprocessed, {from: id, to: id});
+			const processed = await processor.process(preprocessed, {from: id as string, to: id as string});
 
 			cssMap.set(id, processed);
 
@@ -106,7 +112,6 @@ export default (pluginOptions: PluginOptions): Plugin => {
 
 			return {
 				code: [HEADER_PART, ...parts, getPart(exports.defaultScope)].join("\n"),
-				map: {mappings: ""} as SourceMap,
 			};
 		},
 
