@@ -10,7 +10,7 @@
 
 		"lib": [
 			"scripthost",
-			"es2017"
+			"es2018"
 		],
 
 		"noImplicitAny": true
