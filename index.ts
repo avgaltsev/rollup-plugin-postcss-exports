@@ -47,9 +47,9 @@ export interface PluginOptions {
 	exclude?: Glob;
 	extensions?: string[];
 	plugins?: AcceptedPlugin[];
-	takeCss?: CssTaker;
 	preprocess?: Preprocessor;
 	generateName?: NameGenerator;
+	takeCss?: CssTaker;
 }
 
 const getExportPart = (scope: Scope) => {
@@ -68,9 +68,9 @@ export default (pluginOptions: PluginOptions): Plugin => {
 	const extensions = Array.isArray(pluginOptions.extensions) ? pluginOptions.extensions : [];
 	const plugins = Array.isArray(pluginOptions.plugins) ? pluginOptions.plugins : [];
 
+	const preprocess = (source: string) => Promise.resolve((typeof pluginOptions.preprocess === "function") ? pluginOptions.preprocess(source) : source);
 	const generateName = pluginOptions.generateName;
 	const takeCss = (typeof pluginOptions.takeCss === "function") ? pluginOptions.takeCss : dontTakeCss;
-	const preprocess = (source: string) => Promise.resolve((typeof pluginOptions.preprocess === "function") ? pluginOptions.preprocess(source) : source);
 
 	const cssMap = new Map();
 
